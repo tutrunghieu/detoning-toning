@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package detoning;
+package detone;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -19,7 +19,7 @@ import java.util.Map;
  * @author admin
  */
 
-public class Detoning extends demo2{
+public class Detone extends demo2{
 
     /**
      * @param args the command line arguments
@@ -29,10 +29,8 @@ public class Detoning extends demo2{
         HashMap user=new HashMap();
         demo2 a = new demo2();
         a.creatmap();
-        user=a.loadmap();
-        // TODO code application logic here
-        char detoning;
-        System.out.print("\t" + user);
+        a.loadmap(user);
+        
         File f1 = new File("C:\\Users\\admin\\Desktop\\study\\1\\demo2\\demo2.txt");
         File f2 = new File("C:\\Users\\admin\\Desktop\\study\\1\\demo2\\timchu.txt");
         Scanner input = new Scanner(f1);
@@ -40,22 +38,23 @@ public class Detoning extends demo2{
         writer = new FileWriter(f2);
         String s=null;
         String t=null;
-        s=input.next();
-        while(input.hasNext()){
-        
-            String res = "";
+        do {
+            s=input.next();
+            String res=new String();
             for(int k=0; k<s.length(); k++) 
             {
-                int sk = s.charAt(k);
-                if( user.containsKey(sk)) res += (char)user.get(sk);
+                System.out.print("\t" + user);   
+                char sk = s.charAt(k);
+                if( user.containsKey(sk)){
+                    res += (char)user.get(sk);
+                    System.out.print("\t" + sk);      
+                }
                 else res += (char)sk;
-                writer.write(res);
             }
-            s=input.next();
-        }
+            writer.write("\n"  +res);
+        }while(input.hasNext());
         input.close();
         writer.close();
-        
     }
 }
 
