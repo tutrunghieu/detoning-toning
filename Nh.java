@@ -12,12 +12,10 @@ import java.util.TreeMap;
 public class Nh {
 
 	
-	public static Map<Integer, Integer> loadDetoneMap(FileInputStream file) throws Exception
+	public static Map<Integer, Integer> loadDetoneMap(BufferedReader reader) throws Exception
 	{
 		Map<Integer, Integer> lut = new TreeMap<Integer, Integer>();
         
-		BufferedReader reader = null;
-        reader = new BufferedReader(new InputStreamReader(file));
 		while(true)
 		{
 			String line = reader.readLine();
@@ -27,7 +25,6 @@ public class Nh {
 			lut.put((int)cells[0].charAt(0), (int)cells[1].charAt(0));
 		}
 		
-		file.close();
 		return lut;
 	}
 	
@@ -36,6 +33,7 @@ public class Nh {
         List<String> ls = lut.get(s);
         if(ls == null) {
             ls=new ArrayList<String>();
+            ls.add(t);
             lut.put(s, ls);
         }
         else if(!ls.contains(t)){
@@ -66,30 +64,41 @@ public class Nh {
 		return res;
 	}
 
-	public static Map<String, List<String>> creatMapDetone(FileInputStream fit,Map lut) throws IOException {
+	public static Map<String, List<String>> creatMapDetone(BufferedReader fit,Map lut) throws IOException {
 		Map<String, List<String>> res=new TreeMap<String, List<String>>();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(fit));
+		BufferedReader reader = new BufferedReader(new BufferedReader(fit));
+		String line;
+		List<String> lis =new ArrayList<String>();
 		while(true)
 		{
-	            String line = reader.readLine();
+	            line = reader.readLine();
 	            if(line == null) break;
-	            String[] cells = line.replace("->", " ").split("\\s+[ ?!:;]+");
-	            String z1,z2,z3;
-	            for(int i=0;i<cells.length;i++){
-	                String z=detoning(cells[i],lut);
-	                add(res,z,cells[i]);
-	                if (i<cells.length) 
+	            if(!lis.isEmpty())lis.removeAll(lis);
+	            for(String sk: line.split("[ ,.:;!?~']+")){
+	            	lis.add(sk);
+	            }
+	            for(int i=0;i<lis.size();i++){
+	            	String sa1 = lis.get(i);
+	            	String sb1=detoning(sa1,lut);
+	            	add(res,sb1,sa1);
+	                if (i+1<lis.size()) 
 	                {
-	                    z1=cells[i].concat(cells[i+1]);
-	                    add(res,z,z1);
-	                    if (i+1<cells.length)
+	                    String sa2=lis.get(i+1);
+	                    sa1+=" ";
+	                    sa1+=sa2;
+	                    add(res,sb1,sa1);
+	                    if (i+2<lis.size())
 	                    {
-	                        z2=z1.concat(cells[i+2]);
-	                        add(res,z,z2);
-	                        if (i+2<cells.length)
+	                        String sa3=lis.get(i+2);
+	                        sa1+=" ";
+		                    sa1+=sa3;
+		                    add(res,sb1,sa1);
+	                        if (i+3<lis.size())
 	                        {
-	                            z3=z2.concat(cells[i+3]);
-	                            add(res,z,z3);
+	                        	String sa4=lis.get(i+3);
+		                        sa1+=" ";
+			                    sa1+=sa4;
+			                    add(res,sb1,sa1);
 	                        }
 	                    }
 	                
