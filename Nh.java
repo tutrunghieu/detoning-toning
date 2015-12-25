@@ -1,15 +1,14 @@
-package character;
+package demo;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class Nh {
+public class nh {
 
 	
 	public static Map<Integer, Integer> loadDetoneMap(BufferedReader reader) throws Exception
@@ -86,18 +85,27 @@ public class Nh {
 	                    String sa2=lis.get(i+1);
 	                    sa1+=" ";
 	                    sa1+=sa2;
+	                    String sb2=detoning(sa2,lut);
+	                    sb1+="/";
+	                    sb1+=sb2;
 	                    add(res,sb1,sa1);
 	                    if (i+2<lis.size())
 	                    {
 	                        String sa3=lis.get(i+2);
 	                        sa1+=" ";
 		                    sa1+=sa3;
+		                    String sb3=detoning(sa3,lut);
+		                    sb1+="/";
+		                    sb1+=sb3;
 		                    add(res,sb1,sa1);
 	                        if (i+3<lis.size())
 	                        {
 	                        	String sa4=lis.get(i+3);
 		                        sa1+=" ";
 			                    sa1+=sa4;
+			                    String sb4=detoning(sa4,lut);
+			                    sb1+="/";
+			                    sb1+=sb4;
 			                    add(res,sb1,sa1);
 	                        }
 	                    }
@@ -121,5 +129,78 @@ public class Nh {
 		}
 		
 		return res;
+	}
+
+	public static double similar(String A, String B, Map<String, List<String>> m) {
+		boolean ak;
+		double x=0;
+		List<String> lis =new ArrayList<String>();
+ 		for(String tk: A.split("[ ,.:;!?~']+")){
+        	lis.add(tk);                        	// list A: word need to toning
+		}
+        List<String> lut =new ArrayList<String>();
+    	for(String xk: B.split("[ ,.:;!?~']+")){
+            lut.add(xk);							// list B: word toned but need to compare
+    	}
+    	double sk =Math.max(lis.size(), lut.size());
+    	for(int i=0;i<lis.size();i++){
+    		String s=lis.get(i);					// List A:	s
+    		String t=lut.get(i);					// List B:	t
+    		List<String> keyset=m.get(s);
+    		ak=compare(t,keyset);
+    		if(ak) {
+    			x++;
+    		}
+    		if (i+1<sk) 
+            {
+                String sa2=lis.get(i+1);			// List A:	sa2
+                String s2=s+"/"+sa2;				
+                String ta2=lut.get(i+1);			// List B:	ta2
+                String t2=t+"/"+ta2;
+                keyset=m.get(s2);
+                ak=compare(t2,keyset);
+        		if(ak) {
+        			x++;
+        			i++;
+        		}
+                if (i+2<sk)
+                {
+                    String sa3=lis.get(i+2);		// List A:	sa3
+                    String s3=s2+"/"+sa3;			
+                    String ta3=lut.get(i+2);		// List B:	ta3
+                    String t3=t2+"/"+ta3;
+                    keyset=m.get(s3);
+                    ak=compare(t3,keyset);
+            		if(ak) {
+            			x++;
+            			i++;
+            		}
+                    if (i+3<sk)
+                    {
+                    	String sa4=lis.get(i+3);	// List A:	sa4
+                    	String s4=s3+"/"+sa4;		//s3: 4 tu lien tiep
+                    	String ta4=lut.get(i+3);	// List B:	ta4
+                    	String t4=t3+"/"+ta4;		//t3: 4 tu lien tiep
+                    	keyset=m.get(s4);
+                        ak=compare(t4,keyset);
+                		if(ak) {
+                			x++;
+                			i++;
+                		}
+                    }
+                	
+                }
+            }
+    	}
+		return x/sk;
+	}
+
+	private static  boolean compare(String t, List<String> keyset) {
+		for(int ik=0;ik<keyset.size();ik++){
+			if(keyset.get(ik).equals(t)) 
+				return true;
+			
+		}
+		return false;
 	}
 }
